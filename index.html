@@ -6,77 +6,123 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Casa Board</title>
+<link rel="preload" href="fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
 <style>
   /* This file contains no household data. Everything shown is decrypted in the browser from data.enc.json. */
+  /* Fonts: SIL OFL, self-hosted (Fontsource latin subsets). Fraunces for display, Atkinson Hyperlegible Next for reading. */
+  @font-face { font-family: "Fraunces"; src: url("fonts/fraunces-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Atkinson Hyperlegible Next"; src: url("fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
   :root {
-    --bg: #f6f3ee; --card: #ffffff; --ink: #1f1d1a; --muted: #6d675f; --line: #e6e0d7;
-    --accent: #7b4fa0; --accent-soft: #f1eaf7; --warn: #b3261e; --warn-soft: #fde8e6; --ok: #2e7d4f;
-    --radius: 16px;
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Atkinson Hyperlegible Next", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --bg: #f6f3ee; --card: #ffffff; --ink: #1f1d1a; --muted: #655f57; --line: #e8e2d8;
+    --accent: #6f4596; --accent-soft: #f1eaf7;
+    --off-bg: #fbecd6; --off-ink: #7a4a0c; --school-bg: #e3f1e8; --school-ink: #1f5c39; --free-bg: #efebe5; --free-ink: #5d574f;
+    --warn: #b3261e; --warn-soft: #fde8e6; --ok: #2e7d4f;
+    --radius: 18px;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #171614; --card: #22201d; --ink: #f2eee8; --muted: #a59e94; --line: #34302b;
-      --accent: #c8a6e6; --accent-soft: #2e2636; --warn: #ff8a80; --warn-soft: #3a1f1d; --ok: #7fd1a0;
+      --bg: #171614; --card: #221f1c; --ink: #f3efe9; --muted: #aaa298; --line: #35312c;
+      --accent: #cdb0ea; --accent-soft: #2f2738;
+      --off-bg: #3b2d17; --off-ink: #f3c98b; --school-bg: #1d3226; --school-ink: #9fdcb6; --free-bg: #2c2925; --free-ink: #bdb5aa;
+      --warn: #ff8a80; --warn-soft: #3a1f1d; --ok: #7fd1a0;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #171614; --card: #22201d; --ink: #f2eee8; --muted: #a59e94; --line: #34302b;
-    --accent: #c8a6e6; --accent-soft: #2e2636; --warn: #ff8a80; --warn-soft: #3a1f1d; --ok: #7fd1a0;
+    --bg: #171614; --card: #221f1c; --ink: #f3efe9; --muted: #aaa298; --line: #35312c;
+    --accent: #cdb0ea; --accent-soft: #2f2738;
+    --off-bg: #3b2d17; --off-ink: #f3c98b; --school-bg: #1d3226; --school-ink: #9fdcb6; --free-bg: #2c2925; --free-ink: #bdb5aa;
+    --warn: #ff8a80; --warn-soft: #3a1f1d; --ok: #7fd1a0;
   }
   * { box-sizing: border-box; }
+  /* Fluid base: ~17px on phones, ~19px on a portrait tablet, ~21px on a landscape kitchen tablet */
+  html { font-size: clamp(17px, 0.9rem + 0.45vw, 21px); }
   html, body { margin: 0; }
   body {
     background: var(--bg); color: var(--ink);
-    font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font-family: var(--font-body); font-size: 1rem; line-height: 1.5;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
   }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 48px; }
-  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-  .date { font-size: clamp(28px, 5vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
-  .sub { color: var(--muted); font-size: 15px; }
-  .pill { font-size: 14px; color: var(--muted); background: var(--card); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
-  .stale { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 16px; font-weight: 600; }
-  .banners { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-  .banner { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 8px 14px; font-weight: 600; font-size: 15px; }
-  .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
-  @media (min-width: 900px) { .grid { grid-template-columns: 1.4fr 1fr; } }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
-  .card h2 { margin: 0 0 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
-  .person { display: grid; grid-template-columns: 112px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
-  .person:first-of-type { border-top: 0; padding-top: 2px; }
-  .who { font-weight: 700; font-size: 18px; }
-  .items { display: flex; flex-direction: column; gap: 6px; }
-  .item { display: flex; gap: 10px; align-items: baseline; }
-  .time { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; min-width: 74px; font-size: 15px; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 1.25rem 16px 3rem; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem 1rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+  .date { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.4rem); line-height: 1.02; letter-spacing: -0.025em; text-wrap: balance; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin-top: 0.35rem; letter-spacing: 0.01em; }
+  .pill { font-size: 0.8rem; color: var(--muted); background: var(--card); border: 1px solid var(--line); padding: 0.35rem 0.8rem; border-radius: 999px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .stale { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn); border-radius: var(--radius); padding: 0.8rem 1rem; margin-bottom: 1rem; font-weight: 700; }
+  .banners { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.1rem; }
+  .banner { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 0.45rem 0.95rem; font-weight: 700; font-size: 0.95rem; }
+  .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 1.45fr 1fr; } }
+  .stack { display: grid; gap: 1rem; align-content: start; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.25rem 1.2rem; }
+  .card h2 { margin: 0 0 0.85rem; font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+  .card h2 .h2-day { text-transform: none; letter-spacing: 0.02em; font-weight: 600; }
+
+  /* Day cards */
+  .person { display: grid; grid-template-columns: 8.2rem 1fr; gap: 0.9rem; padding: 0.85rem 0; border-top: 1px solid var(--line); align-items: start; }
+  .person:first-of-type { border-top: 0; padding-top: 0.15rem; }
+  .who { display: flex; align-items: center; gap: 0.45rem; font-family: var(--font-display); font-weight: 600; font-size: 1.35rem; line-height: 1.2; letter-spacing: -0.01em; }
+  .who .em { width: 1.35em; flex: none; text-align: center; font-size: 0.95em; }
+  .items { display: flex; flex-direction: column; gap: 0.45rem; padding-top: 0.15rem; }
+  .item { display: grid; grid-template-columns: 5.4rem 1fr; gap: 0.6rem; align-items: baseline; }
+  .time { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; font-size: 1rem; white-space: nowrap; }
+  .time.allday { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  .what { font-size: 1.08rem; font-weight: 500; line-height: 1.35; text-wrap: pretty; }
+  .note { color: var(--muted); font-size: 0.86rem; font-weight: 400; line-height: 1.4; }
+  .tag { display: inline-block; align-self: flex-start; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; padding: 0.22em 0.7em; border-radius: 999px; background: var(--free-bg); color: var(--free-ink); }
+  .tag.off { background: var(--off-bg); color: var(--off-ink); }
+  .tag.school { background: var(--school-bg); color: var(--school-ink); }
   .quiet { color: var(--muted); }
-  .note { color: var(--muted); font-size: 14px; }
-  .meal { display: grid; grid-template-columns: 96px 1fr; gap: 8px; padding: 6px 0; }
-  .meal b { color: var(--muted); font-weight: 600; font-size: 15px; }
-  .prep { border-top: 1px solid var(--line); padding: 12px 0; }
-  .prep:first-of-type { border-top: 0; padding-top: 2px; }
-  .prep-title { font-weight: 700; }
-  .prep-when { color: var(--accent); font-weight: 600; font-size: 14px; }
-  label.check { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; cursor: pointer; }
-  label.check input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--ok); flex: none; }
+  .ic { margin-right: 0.4em; font-family: var(--font-body); font-weight: 400; }
+  /* Tomorrow: one step smaller and quieter, so Today wins the glance */
+  .card.later .who { font-size: 1.1rem; }
+  .card.later .what { font-size: 0.98rem; }
+  .card.later .time { font-size: 0.92rem; }
+  .card.later .person { padding: 0.6rem 0; }
+
+  /* Meals */
+  .meal { padding: 0.55rem 0; border-top: 1px solid var(--line); }
+  .meal:first-of-type { border-top: 0; padding-top: 0; }
+  .meal b { display: block; color: var(--muted); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.1rem; }
+  .meal span { font-size: 1.1rem; font-weight: 500; line-height: 1.35; text-wrap: pretty; }
+
+  /* To prepare */
+  .prep { border-top: 1px solid var(--line); padding: 0.9rem 0 0.4rem; }
+  .prep:first-of-type { border-top: 0; padding-top: 0; }
+  .prep-when { color: var(--accent); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.03em; font-variant-numeric: tabular-nums; }
+  .prep-title { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; letter-spacing: -0.01em; margin: 0.15rem 0 0.25rem; text-wrap: balance; }
+  label.check { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.45rem 0; cursor: pointer; font-size: 1.05rem; line-height: 1.35; }
+  label.check input { width: 1.5rem; height: 1.5rem; margin: 0; accent-color: var(--ok); flex: none; }
   label.check.done span { text-decoration: line-through; color: var(--muted); }
-  .up { display: grid; grid-template-columns: 112px 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
-  .up:first-of-type { border-top: 0; }
-  .up .d { color: var(--muted); font-weight: 600; font-size: 15px; }
-  .stack { display: grid; gap: 16px; }
-  /* lock screen */
+
+  /* Coming up */
+  .up { display: grid; grid-template-columns: 4.6rem 1fr; gap: 0.8rem; padding: 0.6rem 0; border-top: 1px solid var(--line); align-items: baseline; }
+  .up:first-of-type { border-top: 0; padding-top: 0; }
+  .up .d { display: flex; flex-direction: column; line-height: 1.1; }
+  .up .wd { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  .up .dn { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .up .what { font-size: 1rem; }
+
+  /* Lock screen */
   .lock { min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
-  .lock form { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; width: min(380px, 100%); display: grid; gap: 14px; }
-  .lock h1 { margin: 0; font-size: 28px; }
-  .lock input[type=password] { font: inherit; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; }
-  .lock button { font: inherit; font-weight: 700; padding: 12px; border-radius: 12px; border: 0; background: var(--accent); color: #fff; cursor: pointer; }
+  .lock form { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.75rem; width: min(400px, 100%); display: grid; gap: 0.9rem; }
+  .lock h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 2rem; letter-spacing: -0.02em; }
+  .lock input[type=password] { font: inherit; font-size: 1.05rem; padding: 0.75rem 0.9rem; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; }
+  .lock button { font: inherit; font-weight: 700; font-size: 1.05rem; padding: 0.75rem; border-radius: 12px; border: 0; background: var(--accent); color: #fff; cursor: pointer; }
   :root[data-theme="dark"] .lock button { color: #171614; }
-  .err { color: var(--warn); font-size: 14px; min-height: 1em; }
-  footer { margin-top: 20px; display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; flex-wrap: wrap; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .lock button { color: #171614; } }
+  .err { color: var(--warn); font-size: 0.9rem; min-height: 1em; }
+  footer { margin-top: 1.4rem; display: flex; justify-content: space-between; gap: 0.75rem; color: var(--muted); font-size: 0.78rem; flex-wrap: wrap; }
   footer button { font: inherit; background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; }
-  @media (max-width: 520px) {
-    .person, .up { grid-template-columns: 1fr; gap: 4px; }
-    .meal { grid-template-columns: 80px 1fr; }
+  @media (max-width: 560px) {
+    .person { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.75rem; }
+    .person .items { flex-basis: 100%; }
+    .person .items:has(> .tag:only-child), .person .items:has(> .quiet:only-child) { flex-basis: auto; padding-top: 0; }
+    .who { font-size: 1.25rem; }
+    .item { grid-template-columns: 4.9rem 1fr; }
   }
 </style>
 </head>
@@ -201,22 +247,25 @@
     return { items, status };
   }
 
-  function dayCard(day, title) {
+  const whoHTML = (label) => { const i = label.indexOf(" "); return `<span class="em">${esc(label.slice(0, i))}</span><span>${esc(label.slice(i + 1))}</span>`; };
+  const tagHTML = (status) => status ? `<span class="tag ${status === "No school" ? "off" : status === "School day" ? "school" : ""}">${esc(status)}</span>` : "";
+
+  function dayCard(day, title, later) {
     const rows = PEOPLE.map((p) => {
       const { items, status } = personLines(day, p);
       const list = items.map((e) => `
-        <div class="item"><span class="time">${e.allDay ? "All day" : esc(fmtTime(e.start))}</span>
-        <span>${e.who.includes("home") ? esc(e.icon) + " " : ""}${esc(e.title)}${e.location ? ` <span class="note">· ${esc(e.location)}</span>` : ""}${e.note && p.id !== "home" ? `<div class="note">${esc(e.note)}</div>` : ""}</span></div>`).join("");
-      const empty = p.id === "home" ? `<span class="quiet">Nothing scheduled</span>` : `<span class="quiet">${esc(status || "Free")}</span>`;
-      const head = status && items.length ? `<span class="quiet">${esc(status)}</span>` : "";
-      return `<div class="person"><div class="who">${esc(p.label)}</div><div class="items">${head}${list || empty}</div></div>`;
+        <div class="item"><span class="time${e.allDay ? " allday" : ""}">${e.allDay ? "All day" : esc(fmtTime(e.start))}</span>
+        <div class="what">${e.who.includes("home") ? `<span class="ic">${esc(e.icon)}</span>` : ""}${esc(e.title)}${e.location ? `<div class="note">${esc(e.location)}</div>` : ""}${e.note && p.id !== "home" ? `<div class="note">${esc(e.note)}</div>` : ""}</div></div>`).join("");
+      const empty = p.id === "home" ? `<span class="quiet">Nothing scheduled</span>` : tagHTML(status || "Free");
+      const head = items.length ? tagHTML(status) : "";
+      return `<div class="person"><div class="who">${whoHTML(p.label)}</div><div class="items">${head}${list || empty}</div></div>`;
     }).join("");
-    return `<section class="card"><h2>${esc(title)}</h2>${rows}</section>`;
+    return `<section class="card${later ? " later" : ""}"><h2>${title}</h2>${rows}</section>`;
   }
 
   function mealsCard(day, title) {
     const m = (DATA.meals || {})[day];
-    const body = m ? ["breakfast", "lunch", "dinner"].map((k) => `<div class="meal"><b>${k[0].toUpperCase() + k.slice(1)}</b><span>${esc(m[k] || "—")}</span></div>`).join("")
+    const body = m ? ["breakfast", "lunch", "dinner"].map((k) => `<div class="meal"><b>${k}</b><span>${esc(m[k] || "—")}</span></div>`).join("")
       : `<div class="quiet">No menu for this day yet.</div>`;
     return `<section class="card"><h2>${esc(title)}</h2>${body}</section>`;
   }
@@ -234,7 +283,7 @@
         return `<label class="check ${done ? "done" : ""}"><input type="checkbox" data-k="${esc(k)}" ${done ? "checked" : ""}><span>${esc(c)}</span></label>`;
       }).join("");
       return `<div class="prep"><div class="prep-when">${esc(when)}${e.allDay ? "" : " · " + esc(fmtTime(e.start))}</div>
-        <div class="prep-title">${esc(e.icon)} ${esc(e.title)}</div>${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}${checks}</div>`;
+        <div class="prep-title"><span class="ic">${esc(e.icon)}</span>${esc(e.title)}</div>${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}${checks}</div>`;
     }).join("");
     return `<section class="card"><h2>To prepare</h2>${body}</section>`;
   }
@@ -247,9 +296,13 @@
       .sort((a, b) => a.start.localeCompare(b.start)).slice(0, 12);
     if (!ups.length) return "";
     const icon = (e) => e.who.map((w) => kidIcon(w)).join("") || e.icon;
+    const wd = (iso) => fmtDay(iso, { weekday: "short" });
+    const dn = (iso) => fmtDay(iso, { day: "numeric" });
     const body = ups.map((e) => {
-      const range = multiDay(e) ? (() => { const a = evStart(e), b = addDays(evEnd(e), -1); return fmtDay(a, { month: "short", day: "numeric" }) + "–" + (a.slice(0, 7) === b.slice(0, 7) ? fmtDay(b, { day: "numeric" }) : fmtDay(b, { month: "short", day: "numeric" })); })() : fmtDay(evStart(e), { weekday: "short", month: "short", day: "numeric" });
-      return `<div class="up"><div class="d">${esc(range)}</div><div>${esc(icon(e))} ${esc(e.title)}${e.allDay ? "" : ` <span class="note">· ${esc(fmtTime(e.start))}</span>`}</div></div>`;
+      const a = evStart(e), b = addDays(evEnd(e), -1);
+      const d = multiDay(e) ? `<span class="wd">${esc(wd(a))}–${esc(wd(b))}</span><span class="dn">${esc(dn(a))}–${esc(dn(b))}</span>`
+        : `<span class="wd">${esc(wd(a))} · ${esc(fmtDay(a, { month: "short" }))}</span><span class="dn">${esc(dn(a))}</span>`;
+      return `<div class="up"><div class="d">${d}</div><div class="what"><span class="ic">${esc(icon(e))}</span>${esc(e.title)}${e.allDay ? "" : `<div class="note">${esc(fmtTime(e.start))}</div>`}</div></div>`;
     }).join("");
     return `<section class="card"><h2>Coming up</h2>${body}</section>`;
   }
@@ -271,7 +324,7 @@
         </header>
         ${banners ? `<div class="banners">${banners}</div>` : ""}
         <div class="grid">
-          <div class="stack">${dayCard(today, "Today")}${dayCard(tomorrow, "Tomorrow · " + fmtDay(tomorrow, { weekday: "long" }))}</div>
+          <div class="stack">${dayCard(today, "Today")}${dayCard(tomorrow, `Tomorrow <span class="h2-day">· ${esc(fmtDay(tomorrow, { weekday: "long" }))}</span>`, true)}</div>
           <div class="stack">${mealsCard(today, "Today's meals")}${prepCard(today)}${upcomingCard(today)}</div>
         </div>
         <footer><span>Changes go on the FAMILY calendar. This board updates at 6 AM and 5 PM.</span><button id="lockbtn" type="button">Lock this device</button></footer>
