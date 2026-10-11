@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Casa Board</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+<style>
+  /* This file contains no household data. Everything shown is decrypted in the browser from data.enc.json. */
+  :root {
+    --bg: #f6f3ee; --card: #ffffff; --ink: #1f1d1a; --muted: #6d675f; --line: #e6e0d7;
+    --accent: #7b4fa0; --accent-soft: #f1eaf7; --warn: #b3261e; --warn-soft: #fde8e6; --ok: #2e7d4f;
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171614; --card: #22201d; --ink: #f2eee8; --muted: #a59e94; --line: #34302b;
+      --accent: #c8a6e6; --accent-soft: #2e2636; --warn: #ff8a80; --warn-soft: #3a1f1d; --ok: #7fd1a0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171614; --card: #22201d; --ink: #f2eee8; --muted: #a59e94; --line: #34302b;
+    --accent: #c8a6e6; --accent-soft: #2e2636; --warn: #ff8a80; --warn-soft: #3a1f1d; --ok: #7fd1a0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .date { font-size: clamp(28px, 5vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .sub { color: var(--muted); font-size: 15px; }
+  .pill { font-size: 14px; color: var(--muted); background: var(--card); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
+  .stale { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 16px; font-weight: 600; }
+  .banners { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .banner { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 8px 14px; font-weight: 600; font-size: 15px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 1.4fr 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .card h2 { margin: 0 0 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+  .person { display: grid; grid-template-columns: 112px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .person:first-of-type { border-top: 0; padding-top: 2px; }
+  .who { font-weight: 700; font-size: 18px; }
+  .items { display: flex; flex-direction: column; gap: 6px; }
+  .item { display: flex; gap: 10px; align-items: baseline; }
+  .time { font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 700; min-width: 74px; font-size: 15px; }
+  .quiet { color: var(--muted); }
+  .note { color: var(--muted); font-size: 14px; }
+  .meal { display: grid; grid-template-columns: 96px 1fr; gap: 8px; padding: 6px 0; }
+  .meal b { color: var(--muted); font-weight: 600; font-size: 15px; }
+  .prep { border-top: 1px solid var(--line); padding: 12px 0; }
+  .prep:first-of-type { border-top: 0; padding-top: 2px; }
+  .prep-title { font-weight: 700; }
+  .prep-when { color: var(--accent); font-weight: 600; font-size: 14px; }
+  label.check { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; cursor: pointer; }
+  label.check input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--ok); flex: none; }
+  label.check.done span { text-decoration: line-through; color: var(--muted); }
+  .up { display: grid; grid-template-columns: 112px 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .up:first-of-type { border-top: 0; }
+  .up .d { color: var(--muted); font-weight: 600; font-size: 15px; }
+  .stack { display: grid; gap: 16px; }
+  /* lock screen */
+  .lock { min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
+  .lock form { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; width: min(380px, 100%); display: grid; gap: 14px; }
+  .lock h1 { margin: 0; font-size: 28px; }
+  .lock input[type=password] { font: inherit; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; }
+  .lock button { font: inherit; font-weight: 700; padding: 12px; border-radius: 12px; border: 0; background: var(--accent); color: #fff; cursor: pointer; }
+  :root[data-theme="dark"] .lock button { color: #171614; }
+  .err { color: var(--warn); font-size: 14px; min-height: 1em; }
+  footer { margin-top: 20px; display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; flex-wrap: wrap; }
+  footer button { font: inherit; background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 0; }
+  @media (max-width: 520px) {
+    .person, .up { grid-template-columns: 1fr; gap: 4px; }
+    .meal { grid-template-columns: 80px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(() => {
+  const TZ = "Asia/Manila";
+  const STALE_HOURS = 30;
+  // Names live only in the encrypted payload (DATA.people) — nothing identifying sits in this public file.
+  let PEOPLE = [];
+  const kidIcon = (w) => { const p = PEOPLE.find((x) => x.id === w && x.school); return p ? p.label.split(" ")[0] : ""; };
+  const app = document.getElementById("app");
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+    del(k) { try { localStorage.removeItem(k); } catch {} },
+  };
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const toB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+
+  // ---------- dates (always Manila) ----------
+  const isoIn = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  const addDays = (iso, n) => { const d = new Date(iso + "T12:00:00+08:00"); d.setUTCDate(d.getUTCDate() + n); return isoIn(d); };
+  const fmtDay = (iso, opts) => new Intl.DateTimeFormat("en-US", { timeZone: TZ, ...opts }).format(new Date(iso + "T12:00:00+08:00"));
+  const fmtTime = (s) => new Intl.DateTimeFormat("en-US", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date(s));
+  const evStart = (e) => (e.allDay ? e.start.slice(0, 10) : isoIn(new Date(e.start)));
+  const evEnd = (e) => (e.allDay ? e.end.slice(0, 10) : addDays(evStart(e), 1)); // exclusive
+  const on = (e, day) => evStart(e) <= day && day < evEnd(e);
+  const multiDay = (e) => e.allDay && evEnd(e) > addDays(evStart(e), 1);
+  const isWeekday = (iso) => !["Sat", "Sun"].includes(fmtDay(iso, { weekday: "short" }));
+  const NO_SCHOOL = /break|no class|staff dev|holiday|last day of school/i;
+
+  // ---------- crypto ----------
+  async function deriveKey(pass, saltB64, iter) {
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pass), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(saltB64), iterations: iter, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, true, ["decrypt"]);
+  }
+  async function decrypt(key, blob) {
+    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(blob.iv) }, key, b64(blob.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+  async function fetchBlob() {
+    const r = await fetch("data.enc.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error("Could not load the board data (" + r.status + ").");
+    return r.json();
+  }
+  async function rememberedKey(blob) {
+    const raw = store.get("casa.key"), salt = store.get("casa.salt");
+    if (!raw || salt !== blob.salt) return null;
+    return crypto.subtle.importKey("raw", b64(raw), "AES-GCM", false, ["decrypt"]);
+  }
+
+  // ---------- state ----------
+  let KEY = null, DATA = null;
+
+  function showLock(message) {
+    app.innerHTML = `
+      <div class="lock"><form id="f" autocomplete="on">
+        <h1>🏡 Casa</h1>
+        <div class="sub">Enter the household passphrase.</div>
+        <input type="text" name="username" value="casa" autocomplete="username" hidden>
+        <input id="p" type="password" autocomplete="current-password" placeholder="Passphrase" required>
+        <label class="check" style="padding:0"><input id="r" type="checkbox" checked><span>Remember on this device</span></label>
+        <button type="submit">Open</button>
+        <div class="err" id="e">${esc(message || "")}</div>
+      </form></div>`;
+    document.getElementById("f").addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const e = document.getElementById("e");
+      e.textContent = "Opening…";
+      try {
+        const blob = await fetchBlob();
+        const key = await deriveKey(document.getElementById("p").value, blob.salt, blob.iter);
+        DATA = await decrypt(key, blob);
+        PEOPLE = DATA.people || [];
+        KEY = key;
+        if (document.getElementById("r").checked) {
+          store.set("casa.key", toB64(await crypto.subtle.exportKey("raw", key)));
+          store.set("casa.salt", blob.salt);
+        }
+        render();
+      } catch (err) {
+        e.textContent = err.name === "OperationError" ? "That passphrase didn't work." : err.message;
+      }
+    });
+    document.getElementById("p").focus();
+  }
+
+  async function refresh() {
+    try {
+      const blob = await fetchBlob();
+      if (!KEY) KEY = await rememberedKey(blob);
+      if (!KEY) return showLock();
+      DATA = await decrypt(KEY, blob);
+      PEOPLE = DATA.people || [];
+      render();
+    } catch (err) {
+      if (DATA) return render(); // keep showing what we have; the stale banner will say how old it is
+      KEY = null; store.del("casa.key");
+      showLock(err.name === "OperationError" ? "The passphrase has changed. Enter the new one." : err.message);
+    }
+  }
+
+  // ---------- render ----------
+  function personLines(day, p) {
+    const evs = DATA.events.filter((e) => on(e, day) && e.who.includes(p.id));
+    const banners = evs.filter((e) => e.allDay && (multiDay(e) || NO_SCHOOL.test(e.title)));
+    const items = evs.filter((e) => !banners.includes(e) && !(p.id === "home" && e.checklist.length))
+      .sort((a, b) => (a.allDay ? "" : a.start).localeCompare(b.allDay ? "" : b.start));
+    // School status for kids: a no-school banner that covers them (their own or a household one)
+    let status = "";
+    if (p.school) {
+      const off = DATA.events.find((e) => on(e, day) && e.allDay && NO_SCHOOL.test(e.title) && (e.who.includes(p.id) || e.who.includes("home")));
+      const away = DATA.events.find((e) => on(e, day) && e.allDay && multiDay(e) && e.who.includes("home") && !NO_SCHOOL.test(e.title));
+      if (off) status = "No school";
+      else if (away && !isWeekday(day)) status = "";
+      else if (isWeekday(day)) status = "School day";
+    }
+    return { items, status };
+  }
+
+  function dayCard(day, title) {
+    const rows = PEOPLE.map((p) => {
+      const { items, status } = personLines(day, p);
+      const list = items.map((e) => `
+        <div class="item"><span class="time">${e.allDay ? "All day" : esc(fmtTime(e.start))}</span>
+        <span>${e.who.includes("home") ? esc(e.icon) + " " : ""}${esc(e.title)}${e.location ? ` <span class="note">· ${esc(e.location)}</span>` : ""}${e.note && p.id !== "home" ? `<div class="note">${esc(e.note)}</div>` : ""}</span></div>`).join("");
+      const empty = p.id === "home" ? `<span class="quiet">Nothing scheduled</span>` : `<span class="quiet">${esc(status || "Free")}</span>`;
+      const head = status && items.length ? `<span class="quiet">${esc(status)}</span>` : "";
+      return `<div class="person"><div class="who">${esc(p.label)}</div><div class="items">${head}${list || empty}</div></div>`;
+    }).join("");
+    return `<section class="card"><h2>${esc(title)}</h2>${rows}</section>`;
+  }
+
+  function mealsCard(day, title) {
+    const m = (DATA.meals || {})[day];
+    const body = m ? ["breakfast", "lunch", "dinner"].map((k) => `<div class="meal"><b>${k[0].toUpperCase() + k.slice(1)}</b><span>${esc(m[k] || "—")}</span></div>`).join("")
+      : `<div class="quiet">No menu for this day yet.</div>`;
+    return `<section class="card"><h2>${esc(title)}</h2>${body}</section>`;
+  }
+
+  function prepCard(today) {
+    const until = addDays(today, 4);
+    const preps = DATA.events.filter((e) => e.checklist.length && evStart(e) >= today && evStart(e) < until)
+      .sort((a, b) => a.start.localeCompare(b.start));
+    if (!preps.length) return "";
+    const body = preps.map((e) => {
+      const when = evStart(e) === today ? "Today" : evStart(e) === addDays(today, 1) ? "Tomorrow" : fmtDay(evStart(e), { weekday: "long" });
+      const checks = e.checklist.map((c, i) => {
+        const k = `casa.chk.${evStart(e)}.${e.title}.${i}`;
+        const done = store.get(k) === "1";
+        return `<label class="check ${done ? "done" : ""}"><input type="checkbox" data-k="${esc(k)}" ${done ? "checked" : ""}><span>${esc(c)}</span></label>`;
+      }).join("");
+      return `<div class="prep"><div class="prep-when">${esc(when)}${e.allDay ? "" : " · " + esc(fmtTime(e.start))}</div>
+        <div class="prep-title">${esc(e.icon)} ${esc(e.title)}</div>${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}${checks}</div>`;
+    }).join("");
+    return `<section class="card"><h2>To prepare</h2>${body}</section>`;
+  }
+
+  function upcomingCard(today) {
+    const from = addDays(today, 2), to = addDays(today, 15);
+    const seen = new Set();
+    const ups = DATA.events.filter((e) => evStart(e) >= from && evStart(e) < to && !e.checklist.length)
+      .filter((e) => { const k = e.title; if (seen.has(k) && !e.allDay) return false; seen.add(k); return true; }) // recurring: show next one only
+      .sort((a, b) => a.start.localeCompare(b.start)).slice(0, 12);
+    if (!ups.length) return "";
+    const icon = (e) => e.who.map((w) => kidIcon(w)).join("") || e.icon;
+    const body = ups.map((e) => {
+      const range = multiDay(e) ? (() => { const a = evStart(e), b = addDays(evEnd(e), -1); return fmtDay(a, { month: "short", day: "numeric" }) + "–" + (a.slice(0, 7) === b.slice(0, 7) ? fmtDay(b, { day: "numeric" }) : fmtDay(b, { month: "short", day: "numeric" })); })() : fmtDay(evStart(e), { weekday: "short", month: "short", day: "numeric" });
+      return `<div class="up"><div class="d">${esc(range)}</div><div>${esc(icon(e))} ${esc(e.title)}${e.allDay ? "" : ` <span class="note">· ${esc(fmtTime(e.start))}</span>`}</div></div>`;
+    }).join("");
+    return `<section class="card"><h2>Coming up</h2>${body}</section>`;
+  }
+
+  function render() {
+    const now = new Date();
+    const today = isoIn(now), tomorrow = addDays(today, 1);
+    const gen = new Date(DATA.generatedAt);
+    const ageH = (now - gen) / 36e5;
+    const updated = new Intl.DateTimeFormat("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "2-digit" }).format(gen);
+    const banners = DATA.events.filter((e) => on(e, today) && e.allDay && (multiDay(e) || NO_SCHOOL.test(e.title)))
+      .map((e) => { const icons = e.who.map((w) => kidIcon(w)).join(""); return `<span class="banner">${esc(icons || e.icon)} ${esc(e.title)}</span>`; }).join("");
+    app.innerHTML = `
+      <div class="wrap">
+        ${ageH > STALE_HOURS ? `<div class="stale">⚠️ This board hasn't updated since ${esc(updated)}. Check the FAMILY calendar for anything new.</div>` : ""}
+        <header>
+          <div><div class="date">${esc(fmtDay(today, { weekday: "long", month: "long", day: "numeric" }))}</div><div class="sub">${esc(DATA.household || "")}</div></div>
+          <span class="pill">Updated ${esc(updated)}</span>
+        </header>
+        ${banners ? `<div class="banners">${banners}</div>` : ""}
+        <div class="grid">
+          <div class="stack">${dayCard(today, "Today")}${dayCard(tomorrow, "Tomorrow · " + fmtDay(tomorrow, { weekday: "long" }))}</div>
+          <div class="stack">${mealsCard(today, "Today's meals")}${prepCard(today)}${upcomingCard(today)}</div>
+        </div>
+        <footer><span>Changes go on the FAMILY calendar. This board updates at 6 AM and 5 PM.</span><button id="lockbtn" type="button">Lock this device</button></footer>
+      </div>`;
+    app.querySelectorAll("input[data-k]").forEach((cb) => cb.addEventListener("change", () => {
+      cb.checked ? store.set(cb.dataset.k, "1") : store.del(cb.dataset.k);
+      cb.closest("label").classList.toggle("done", cb.checked);
+    }));
+    document.getElementById("lockbtn").addEventListener("click", () => { store.del("casa.key"); store.del("casa.salt"); KEY = null; DATA = null; showLock(); });
+  }
+
+  refresh();
+  setInterval(refresh, 30 * 60 * 1000);           // pick up the 6 AM / 5 PM rebuilds
+  setInterval(() => DATA && render(), 5 * 60 * 1000); // roll over "today" at midnight
+})();
+</script>
+</body>
+</html>
